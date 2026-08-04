@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { @apply font-sans text-neutral-800 bg-white antialiased; }
+  h1, h2, h3, h4, h5, h6 { @apply font-heading; }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium px-6 py-2.5 rounded-xl transition-all duration-200 inline-flex items-center gap-2 shadow-sm hover:shadow-md active:scale-95;
+  }
+  .btn-secondary {
+    @apply bg-white hover:bg-neutral-50 text-primary-600 border border-primary-200 font-medium px-6 py-2.5 rounded-xl transition-all duration-200 inline-flex items-center gap-2;
+  }
+  .card {
+    @apply bg-white rounded-2xl shadow-card border border-neutral-100 overflow-hidden transition-all duration-300 hover:shadow-card-hover;
+  }
+  .input {
+    @apply w-full px-4 py-2.5 rounded-xl border border-neutral-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-neutral-800 placeholder-neutral-400 transition-all duration-200;
+  }
+  .section-title { @apply text-2xl md:text-3xl font-heading font-bold text-neutral-900; }
+  .badge { @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium; }
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { @apply bg-neutral-100; }
+::-webkit-scrollbar-thumb { @apply bg-neutral-300 rounded-full; }
+::-webkit-scrollbar-thumb:hover { @apply bg-neutral-400; }
+
+.skeleton { @apply bg-neutral-200 rounded-lg animate-pulse; }
+
+.page-enter { animation: fadeIn 0.3s ease-out; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
