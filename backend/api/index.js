@@ -76,9 +76,14 @@ const ensureReady = async () => {
 };
 
 // Vercel serverless export
-const handler = async (req, res) => {
-  await ensureReady();
-  app(req, res);
+module.exports = async (req, res) => {
+  try {
+    await ensureReady();
+    app(req, res);
+  } catch (err) {
+    console.error('Handler error:', err.message);
+    res.status(500).json({ success: false, message: 'Server initialization failed: ' + err.message });
+  }
 };
 
 // Local dev
@@ -88,5 +93,3 @@ if (require.main === module) {
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   });
 }
-
-module.exports = handler;
