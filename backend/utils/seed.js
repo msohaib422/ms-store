@@ -24,11 +24,11 @@ const seedAdmin = async () => {
   const count = await Admin.countDocuments();
   if (count === 0) {
     await Admin.create({
-      email: 'msohai422@gmail.com',
+      email: 'msohaib422@gmail.com',
       password: '12345678',
       name: 'Admin',
     });
-    console.log('Admin account seeded: msohai422@gmail.com / 12345678');
+    console.log('Admin account seeded: msohaib422@gmail.com / 12345678');
   }
 };
 
