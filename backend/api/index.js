@@ -52,6 +52,22 @@ app.use(cookieParser());
 
 if (process.env.NODE_ENV !== 'production') app.use(morgan('dev'));
 
+app.get('/', (_, res) => res.json({ 
+  name: 'M.S. Store API', 
+  version: '1.0.0',
+  status: 'running',
+  endpoints: {
+    health: '/api/health',
+    auth: '/api/auth',
+    products: '/api/products',
+    categories: '/api/categories',
+    reviews: '/api/reviews',
+    messages: '/api/messages',
+    settings: '/api/settings',
+    upload: '/api/upload'
+  }
+}));
+
 app.get('/api/health', (_, res) => res.json({ status: 'ok' }));
 
 app.use('/api/auth', authLimiter, authRoutes);
