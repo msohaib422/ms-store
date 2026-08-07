@@ -64,7 +64,7 @@ NODE_ENV=production
 
 The admin account is auto-created on first startup:
 
-- **Email:** msohai422@gmail.com
+- **Email:** www.msohaib422@gmail.com
 - **Password:** 12345678
 
 Visit `/admin/login` to access the dashboard.
