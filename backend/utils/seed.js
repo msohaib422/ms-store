@@ -7,7 +7,7 @@ const DEFAULT_SETTINGS = [
   { key: 'store_description', value: 'We offer a wide range of quality products at the best prices.' },
   { key: 'phone', value: '03046428782' },
   { key: 'whatsapp', value: '03249503305' },
-  { key: 'email', value: 'msohaib422@gmail.com' },
+  { key: 'email', value: 'www.msohaib422@gmail.com' },
   { key: 'address', value: 'Street No. 8, Mohallah Hussain Nagar, 240 Mor, Jaranwala, Faisalabad, Punjab, Pakistan' },
   { key: 'business_hours', value: 'Mon–Sun: 6:00 AM – 9:00 PM' },
   { key: 'facebook', value: '' },
@@ -24,11 +24,11 @@ const seedAdmin = async () => {
   const count = await Admin.countDocuments();
   if (count === 0) {
     await Admin.create({
-      email: 'msohaib422@gmail.com',
+      email: 'www.msohaib422@gmail.com',
       password: '12345678',
       name: 'Admin',
     });
-    console.log('Admin account seeded: msohaib422@gmail.com / 12345678');
+    console.log('Admin account seeded: www.msohaib422@gmail.com / 12345678');
   }
 };
 
