@@ -22,6 +22,7 @@ npm run dev
 ```
 
 **Environment variables (`frontend/.env`):**
+
 ```
 VITE_API_URL=http://localhost:5000
 ```
@@ -38,6 +39,7 @@ npm run dev
 ```
 
 **Environment variables (`backend/.env`):**
+
 ```
 PORT=5000
 MONGODB_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/msstore
@@ -49,7 +51,7 @@ SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your_gmail@gmail.com
 SMTP_PASS=your_gmail_app_password
-CONTACT_EMAIL=msohaib422@gmail.com
+CONTACT_EMAIL=www.msohaib422@gmail.com
 CLIENT_URL=https://your-frontend.vercel.app
 NODE_ENV=production
 ```
@@ -61,6 +63,7 @@ NODE_ENV=production
 ## Admin Account
 
 The admin account is auto-created on first startup:
+
 - **Email:** msohai422@gmail.com
 - **Password:** 12345678
 
@@ -71,11 +74,13 @@ Visit `/admin/login` to access the dashboard.
 ## Deployment
 
 ### Frontend → Vercel
+
 1. Connect `frontend/` folder to Vercel
 2. Set `VITE_API_URL` to your backend URL
 3. The `frontend/vercel.json` handles SPA routing
 
 ### Backend → Vercel
+
 1. Connect `backend/` folder to Vercel
 2. Add all environment variables in Vercel dashboard
 3. The `backend/vercel.json` routes all requests to `api/index.js`

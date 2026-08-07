@@ -19,7 +19,7 @@ const sendContactEmail = async ({ name, email, phone, subject, message }) => {
   }
 
   const transporter = createTransporter();
-  const contactEmail = process.env.CONTACT_EMAIL || 'msohaib422@gmail.com';
+  const contactEmail = process.env.CONTACT_EMAIL || 'www.msohaib422@gmail.com';
   const submittedAt = new Date().toLocaleString('en-PK', { timeZone: 'Asia/Karachi' });
 
   const html = `
