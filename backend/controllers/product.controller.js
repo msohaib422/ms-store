@@ -1,6 +1,29 @@
 const Product = require('../models/Product');
 const Category = require('../models/Category');
+const cloudinary = require('cloudinary').v2;
 const { success, error } = require('../utils/response');
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+const extractPublicId = (url) => {
+  if (!url) return null;
+  const parts = url.split('/');
+  const uploadIndex = parts.findIndex(p => p === 'upload');
+  if (uploadIndex === -1) return null;
+  const publicIdWithExt = parts.slice(uploadIndex + 2).join('/');
+  return publicIdWithExt.split('.')[0];
+};
+
+const deleteFromCloudinary = async (urls) => {
+  if (!urls || !urls.length) return;
+  const publicIds = urls.map(extractPublicId).filter(Boolean);
+  if (!publicIds.length) return;
+  await Promise.all(publicIds.map(id => cloudinary.uploader.destroy(id)));
+};
 
 const getProducts = async (req, res) => {
   const {
@@ -78,16 +101,26 @@ const createProduct = async (req, res) => {
 };
 
 const updateProduct = async (req, res) => {
-  const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
-    new: true, runValidators: true,
-  }).populate('category', 'name slug');
+  const product = await Product.findById(req.params.id);
   if (!product) return error(res, 'Product not found', 404);
+
+  const oldImages = product.images || [];
+  const newImages = req.body.images || [];
+
+  const deletedImages = oldImages.filter(img => !newImages.includes(img));
+  await deleteFromCloudinary(deletedImages);
+
+  Object.assign(product, req.body);
+  await product.save();
+  await product.populate('category', 'name slug');
+
   return success(res, { product }, 'Product updated');
 };
 
 const deleteProduct = async (req, res) => {
   const product = await Product.findByIdAndDelete(req.params.id);
   if (!product) return error(res, 'Product not found', 404);
+  await deleteFromCloudinary(product.images);
   return success(res, null, 'Product deleted');
 };
 
