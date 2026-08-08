@@ -21,6 +21,8 @@ import AdminCategories from '@/pages/admin/AdminCategories';
 import AdminReviews from '@/pages/admin/AdminReviews';
 import AdminMessages from '@/pages/admin/AdminMessages';
 import AdminSettings from '@/pages/admin/AdminSettings';
+import AdminNotifications from '@/pages/admin/AdminNotifications';
+import AdminProfile from '@/pages/admin/AdminProfile';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -50,7 +52,9 @@ export default function App() {
             <Route path="/admin/categories" element={<ProtectedRoute><AdminCategories /></ProtectedRoute>} />
             <Route path="/admin/reviews" element={<ProtectedRoute><AdminReviews /></ProtectedRoute>} />
             <Route path="/admin/messages" element={<ProtectedRoute><AdminMessages /></ProtectedRoute>} />
+            <Route path="/admin/notifications" element={<ProtectedRoute><AdminNotifications /></ProtectedRoute>} />
             <Route path="/admin/settings" element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
+            <Route path="/admin/profile" element={<ProtectedRoute><AdminProfile /></ProtectedRoute>} />
 
             <Route path="*" element={<NotFoundPage />} />
           </Routes>

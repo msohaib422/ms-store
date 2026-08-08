@@ -2,6 +2,7 @@ const Product = require('../models/Product');
 const Category = require('../models/Category');
 const cloudinary = require('cloudinary').v2;
 const { success, error } = require('../utils/response');
+const { createNotification } = require('./notification.controller');
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -97,6 +98,15 @@ const getSearchSuggestions = async (req, res) => {
 
 const createProduct = async (req, res) => {
   const product = await Product.create(req.body);
+
+  createNotification({
+    type: 'product',
+    title: 'New Product Added',
+    message: `"${product.name}" has been added to the store.`,
+    link: '/admin/products',
+    meta: { productId: product._id, productName: product.name },
+  });
+
   return success(res, { product }, 'Product created', 201);
 };
 
@@ -114,6 +124,16 @@ const updateProduct = async (req, res) => {
   await product.save();
   await product.populate('category', 'name slug');
 
+  if (product.stock < 5 && product.stock >= 0) {
+    createNotification({
+      type: 'product',
+      title: 'Low Stock Alert',
+      message: `"${product.name}" has only ${product.stock} units remaining.`,
+      link: '/admin/products',
+      meta: { productId: product._id, productName: product.name, stock: product.stock },
+    });
+  }
+
   return success(res, { product }, 'Product updated');
 };
 
@@ -121,6 +141,15 @@ const deleteProduct = async (req, res) => {
   const product = await Product.findByIdAndDelete(req.params.id);
   if (!product) return error(res, 'Product not found', 404);
   await deleteFromCloudinary(product.images);
+
+  createNotification({
+    type: 'product',
+    title: 'Product Deleted',
+    message: `"${product.name}" has been removed from the store.`,
+    link: '/admin/products',
+    meta: { productName: product.name },
+  });
+
   return success(res, null, 'Product deleted');
 };
 

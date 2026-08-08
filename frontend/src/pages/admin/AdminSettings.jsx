@@ -37,7 +37,10 @@ const SECTIONS = [
     fields: [
       { key: 'facebook', label: 'Facebook URL', type: 'url' },
       { key: 'instagram', label: 'Instagram URL', type: 'url' },
-      { key: 'twitter', label: 'Twitter URL', type: 'url' },
+      { key: 'twitter', label: 'Twitter / X URL', type: 'url' },
+      { key: 'linkedin', label: 'LinkedIn URL', type: 'url' },
+      { key: 'whatsapp_url', label: 'WhatsApp URL', type: 'url' },
+      { key: 'tiktok', label: 'TikTok URL', type: 'url' },
       { key: 'youtube', label: 'YouTube URL', type: 'url' },
     ],
   },

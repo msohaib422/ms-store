@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin, Facebook, Instagram, Twitter, Youtube, MessageCircle, ShoppingBag, Clock, Heart } from 'lucide-react';
+import { FaLinkedinIn, FaTiktok, FaWhatsapp } from 'react-icons/fa';
 import { useSettings } from '@/context/SettingsContext';
 
 export default function Footer() {
@@ -27,7 +28,7 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-14">
+      <div className="max-w-7xl mx-auto px-4 py-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand */}
           <div>
@@ -39,10 +40,13 @@ export default function Footer() {
             </div>
             <p className="text-sm leading-relaxed text-neutral-400">{settings.store_description}</p>
             <div className="flex gap-3 mt-5">
-              {settings.facebook && <a href={settings.facebook} target="_blank" rel="noreferrer" className="w-9 h-9 bg-neutral-800 hover:bg-primary-600 rounded-lg flex items-center justify-center transition-colors"><Facebook size={16} /></a>}
-              {settings.instagram && <a href={settings.instagram} target="_blank" rel="noreferrer" className="w-9 h-9 bg-neutral-800 hover:bg-pink-600 rounded-lg flex items-center justify-center transition-colors"><Instagram size={16} /></a>}
-              {settings.twitter && <a href={settings.twitter} target="_blank" rel="noreferrer" className="w-9 h-9 bg-neutral-800 hover:bg-sky-500 rounded-lg flex items-center justify-center transition-colors"><Twitter size={16} /></a>}
-              {settings.youtube && <a href={settings.youtube} target="_blank" rel="noreferrer" className="w-9 h-9 bg-neutral-800 hover:bg-red-600 rounded-lg flex items-center justify-center transition-colors"><Youtube size={16} /></a>}
+              {settings.facebook && <a href={settings.facebook} target="_blank" rel="noreferrer" className="w-10 h-10 bg-neutral-800 hover:bg-primary-600 rounded-lg flex items-center justify-center transition-colors"><Facebook size={18} /></a>}
+              {settings.instagram && <a href={settings.instagram} target="_blank" rel="noreferrer" className="w-10 h-10 bg-neutral-800 hover:bg-pink-600 rounded-lg flex items-center justify-center transition-colors"><Instagram size={18} /></a>}
+              {settings.twitter && <a href={settings.twitter} target="_blank" rel="noreferrer" className="w-10 h-10 bg-neutral-800 hover:bg-sky-500 rounded-lg flex items-center justify-center transition-colors"><Twitter size={18} /></a>}
+              {settings.linkedin && <a href={settings.linkedin} target="_blank" rel="noreferrer" className="w-10 h-10 bg-neutral-800 hover:bg-blue-700 rounded-lg flex items-center justify-center transition-colors"><FaLinkedinIn size={18} /></a>}
+              {settings.whatsapp_url && <a href={settings.whatsapp_url} target="_blank" rel="noreferrer" className="w-10 h-10 bg-neutral-800 hover:bg-green-500 rounded-lg flex items-center justify-center transition-colors"><FaWhatsapp size={18} /></a>}
+              {settings.tiktok && <a href={settings.tiktok} target="_blank" rel="noreferrer" className="w-10 h-10 bg-neutral-800 hover:bg-neutral-700 rounded-lg flex items-center justify-center transition-colors"><FaTiktok size={18} /></a>}
+              {settings.youtube && <a href={settings.youtube} target="_blank" rel="noreferrer" className="w-10 h-10 bg-neutral-800 hover:bg-red-600 rounded-lg flex items-center justify-center transition-colors"><Youtube size={18} /></a>}
             </div>
           </div>
 

@@ -1,6 +1,7 @@
 const Review = require('../models/Review');
 const Product = require('../models/Product');
 const { success, error } = require('../utils/response');
+const { createNotification } = require('./notification.controller');
 
 const getReviews = async (req, res) => {
   const { productId, approved } = req.query;
@@ -16,6 +17,15 @@ const getReviews = async (req, res) => {
 
 const createReview = async (req, res) => {
   const review = await Review.create(req.body);
+
+  createNotification({
+    type: 'review',
+    title: 'New Review Submitted',
+    message: `${review.customerName} submitted a ${review.rating}-star review${review.product ? ' for a product' : ''}.`,
+    link: '/admin/reviews',
+    meta: { reviewId: review._id, rating: review.rating },
+  });
+
   return success(res, { review }, 'Review submitted — it will appear after approval', 201);
 };
 
@@ -35,6 +45,14 @@ const approveReview = async (req, res) => {
       reviewsCount: approved.length,
     });
   }
+
+  createNotification({
+    type: 'review',
+    title: 'Review Approved',
+    message: `A review by ${review.customerName} has been approved and is now visible.`,
+    link: '/admin/reviews',
+    meta: { reviewId: review._id, rating: review.rating },
+  });
 
   return success(res, { review }, 'Review approved');
 };

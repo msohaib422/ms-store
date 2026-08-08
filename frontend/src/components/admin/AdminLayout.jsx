@@ -3,11 +3,12 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, Package, FolderOpen, Star, MessageSquare,
-  Settings, LogOut, Menu, X, ShoppingBag, ChevronRight, Bell, User
+  Settings, LogOut, Menu, X, ShoppingBag, ChevronRight, Bell, User, UserCircle
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useSettings } from '@/context/SettingsContext';
 import toast from 'react-hot-toast';
+import NotificationDropdown from './NotificationDropdown';
 
 const navItems = [
   { label: 'Dashboard', icon: LayoutDashboard, to: '/admin' },
@@ -15,6 +16,7 @@ const navItems = [
   { label: 'Categories', icon: FolderOpen, to: '/admin/categories' },
   { label: 'Reviews', icon: Star, to: '/admin/reviews' },
   { label: 'Messages', icon: MessageSquare, to: '/admin/messages' },
+  { label: 'Notifications', icon: Bell, to: '/admin/notifications' },
   { label: 'Settings', icon: Settings, to: '/admin/settings' },
 ];
 
@@ -68,15 +70,15 @@ export default function AdminLayout({ children, title }) {
       </nav>
 
       <div className="p-4 border-t border-neutral-800">
-        <div className="flex items-center gap-3 mb-3 px-2">
+        <Link to="/admin/profile" className="flex items-center gap-3 mb-3 px-2 py-1 rounded-lg hover:bg-neutral-800 transition-colors">
           <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center">
             <User size={14} className="text-white" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-white text-sm font-medium">Admin</p>
+            <p className="text-white text-sm font-medium">{user?.name || 'Admin'}</p>
             <p className="text-neutral-400 text-xs truncate">{user?.email}</p>
           </div>
-        </div>
+        </Link>
         <Link to="/" target="_blank" className="flex items-center gap-2 px-3 py-2 text-neutral-400 hover:text-white text-sm rounded-xl hover:bg-neutral-800 transition-colors mb-1">
           <ShoppingBag size={16} /> View Store
         </Link>
@@ -114,12 +116,10 @@ export default function AdminLayout({ children, title }) {
           </button>
           <h1 className="font-heading font-bold text-neutral-900 text-lg">{title}</h1>
           <div className="ml-auto flex items-center gap-3">
-            <button className="p-2 rounded-lg hover:bg-neutral-100 transition-colors">
-              <Bell size={18} className="text-neutral-600" />
-            </button>
-            <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center">
+            <NotificationDropdown />
+            <Link to="/admin/profile" className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center hover:bg-primary-700 transition-colors">
               <User size={14} className="text-white" />
-            </div>
+            </Link>
           </div>
         </header>
         <main className="flex-1 overflow-y-auto p-6">{children}</main>

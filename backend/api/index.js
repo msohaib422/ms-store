@@ -20,6 +20,7 @@ const reviewRoutes = require('../routes/review.routes');
 const messageRoutes = require('../routes/message.routes');
 const settingsRoutes = require('../routes/settings.routes');
 const uploadRoutes = require('../routes/upload.routes');
+const notificationRoutes = require('../routes/notification.routes');
 
 const app = express();
 
@@ -56,16 +57,17 @@ app.get('/', (_, res) => res.json({
   name: 'Store API', 
   version: '1.0.0',
   status: 'running',
-  endpoints: {
-    health: '/api/health',
-    auth: '/api/auth',
-    products: '/api/products',
-    categories: '/api/categories',
-    reviews: '/api/reviews',
-    messages: '/api/messages',
-    settings: '/api/settings',
-    upload: '/api/upload'
-  }
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth',
+      products: '/api/products',
+      categories: '/api/categories',
+      reviews: '/api/reviews',
+      messages: '/api/messages',
+      settings: '/api/settings',
+      upload: '/api/upload',
+      notifications: '/api/notifications'
+    }
 }));
 
 app.get('/api/health', (_, res) => res.json({ status: 'ok' }));
@@ -77,8 +79,9 @@ app.use('/api/reviews', reviewRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/notifications', notificationRoutes);
 
-app.use('*', (req, res) => res.status(404).json({ success: false, message: 'Route not found' }));
+app.use('/api', (req, res) => res.status(404).json({ success: false, message: 'API route not found' }));
 app.use(errorHandler);
 
 // Initialize DB + seed once per cold start

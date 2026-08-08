@@ -1,6 +1,7 @@
 const Message = require('../models/Message');
 const { sendContactEmail } = require('../utils/email');
 const { success, error } = require('../utils/response');
+const { createNotification } = require('./notification.controller');
 
 const getMessages = async (req, res) => {
   const messages = await Message.find().sort({ createdAt: -1 });
@@ -15,6 +16,14 @@ const createMessage = async (req, res) => {
   }
 
   const saved = await Message.create({ name, email, phone, subject, message });
+
+  createNotification({
+    type: 'message',
+    title: 'New Message Received',
+    message: `${name} sent a message${subject ? `: ${subject}` : ''}.`,
+    link: '/admin/messages',
+    meta: { messageId: saved._id, senderEmail: email },
+  });
 
   // Send email — do not fail request if email fails
   sendContactEmail({ name, email, phone, subject, message }).catch(err =>
