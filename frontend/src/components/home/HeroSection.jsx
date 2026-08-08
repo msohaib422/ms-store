@@ -21,7 +21,7 @@ export default function HeroSection() {
           <motion.div initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }}>
             <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 text-white/80 text-sm mb-6">
               <Star size={14} className="text-yellow-400 fill-yellow-400" />
-              Trusted by customers in Jaranwala, Faisalabad
+              Trusted by customers in Jaranwala
             </div>
             <h1 className="font-heading font-extrabold text-4xl md:text-5xl lg:text-6xl text-white leading-tight">
               {settings.hero_title}
