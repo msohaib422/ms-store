@@ -98,7 +98,7 @@ export default function AboutPage() {
               { value: '500+', label: 'Products' },
               { value: '1000+', label: 'Happy Customers' },
               { value: '5★', label: 'Rating' },
-              { value: '24/7', label: 'Support' },
+              { value: '24/7', label: 'Customer Support' },
             ].map(({ value, label }) => (
               <div key={label}>
                 <p className="font-heading font-extrabold text-4xl text-white">{value}</p>

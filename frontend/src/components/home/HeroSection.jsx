@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, ShoppingBag, MessageCircle, Star, Shield, CheckCircle, Headphones } from 'lucide-react';
+import { ArrowRight, ShoppingBag, MessageCircle, Star, Shield, CheckCircle, MessageSquare } from 'lucide-react';
 import { useSettings } from '@/context/SettingsContext';
 
 export default function HeroSection() {
@@ -40,7 +40,7 @@ export default function HeroSection() {
             <div className="flex flex-wrap gap-6 mt-10 text-white/70 text-sm">
               <div className="flex items-center gap-2"><Shield size={16} className="text-primary-300" /> Authentic products</div>
               <div className="flex items-center gap-2"><CheckCircle size={16} className="text-primary-300" /> Quality assured</div>
-              <div className="flex items-center gap-2"><Headphones size={16} className="text-primary-300" /> 24/7 Support</div>
+              <div className="flex items-center gap-2"><MessageSquare size={16} className="text-primary-300" /> Customer Support</div>
             </div>
           </motion.div>
 
@@ -76,15 +76,15 @@ export default function HeroSection() {
       {/* Features strip */}
       <div className="absolute bottom-0 left-0 right-0 bg-white/10 backdrop-blur-sm border-t border-white/10 hidden md:block">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-6 justify-items-center text-center">
             {[
               { icon: Shield, label: 'Authentic Products', sub: '100% Genuine' },
               { icon: CheckCircle, label: 'Quality Checked', sub: 'Every item verified' },
-              { icon: Headphones, label: '24/7 Support', sub: 'Always available' },
+              { icon: MessageSquare, label: 'Customer Support', sub: 'Always available' },
             ].map(({ icon: Icon, label, sub }) => (
-              <div key={label} className="flex items-center gap-3 text-white">
+              <div key={label} className="flex items-center justify-center gap-3 text-white">
                 <Icon size={20} className="text-primary-200 shrink-0" />
-                <div>
+                <div className="text-left">
                   <p className="text-sm font-medium">{label}</p>
                   <p className="text-xs text-white/60">{sub}</p>
                 </div>

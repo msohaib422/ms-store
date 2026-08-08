@@ -63,7 +63,7 @@ export default function Navbar() {
       {/* Top bar */}
       <div className="bg-primary-700 text-white text-xs py-1.5 hidden md:block">
         <div className="max-w-7xl mx-auto px-4 flex justify-between items-center">
-          <span>Free delivery on orders above Rs. 2000</span>
+          <span>Visit us: Street No. 8, Mohallah Hussain Nagar, Jaranwala</span>
           <div className="flex items-center gap-4">
             <a href={`tel:${settings.phone}`} className="flex items-center gap-1 hover:text-primary-200 transition-colors">
               <Phone size={12} /> {settings.phone}

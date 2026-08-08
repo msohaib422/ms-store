@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, ShoppingBag, MessageCircle, Star, Shield, Truck, RefreshCw, Headphones } from 'lucide-react';
+import { ArrowRight, ShoppingBag, MessageCircle, Star, Shield, MessageSquare, RefreshCw, CheckCircle } from 'lucide-react';
 import { useSettings } from '@/context/SettingsContext';
 
 export default function HeroSection() {
@@ -40,7 +40,6 @@ export default function HeroSection() {
               </a>
             </div>
             <div className="flex flex-wrap gap-6 mt-10 text-white/70 text-sm">
-              <div className="flex items-center gap-2"><Truck size={16} className="text-primary-300" /> Free delivery above Rs. 2000</div>
               <div className="flex items-center gap-2"><Shield size={16} className="text-primary-300" /> Authentic products</div>
               <div className="flex items-center gap-2"><RefreshCw size={16} className="text-primary-300" /> Easy returns</div>
             </div>
@@ -81,10 +80,9 @@ export default function HeroSection() {
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { icon: Truck, label: 'Fast Delivery', sub: 'Across Pakistan' },
-              { icon: Shield, label: 'Secure Shopping', sub: '100% Safe' },
-              { icon: RefreshCw, label: 'Easy Returns', sub: '7-day policy' },
-              { icon: Headphones, label: '24/7 Support', sub: 'Always here' },
+              { icon: Shield, label: 'Authentic Products', sub: '100% Genuine' },
+              { icon: CheckCircle, label: 'Quality Checked', sub: 'Every item verified' },
+              { icon: MessageSquare, label: 'Customer Support', sub: 'Always here' },
             ].map(({ icon: Icon, label, sub }) => (
               <div key={label} className="flex items-center gap-3 text-white">
                 <Icon size={20} className="text-primary-200 shrink-0" />

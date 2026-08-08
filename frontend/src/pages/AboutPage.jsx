@@ -86,7 +86,7 @@ export default function AboutPage() {
       <section className="py-16 bg-primary-700 text-white px-4">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            {[['500+', 'Products'], ['1000+', 'Happy Customers'], ['5★', 'Rating'], ['24/7', 'Support']].map(([value, label]) => (
+            {[['500+', 'Products'], ['1000+', 'Happy Customers'], ['5★', 'Rating'], ['24/7', 'Customer Support']].map(([value, label]) => (
               <div key={label}>
                 <p className="font-heading font-extrabold text-4xl text-white">{value}</p>
                 <p className="text-primary-200 mt-1">{label}</p>

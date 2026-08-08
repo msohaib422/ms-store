@@ -50,7 +50,7 @@ export default function Footer() {
           <div>
             <h4 className="text-white font-heading font-semibold text-base mb-4">Quick Links</h4>
             <ul className="space-y-2.5">
-              {[['Home', '/'], ['Products', '/products'], ['About Us', '/about'], ['Contact', '/contact']].map(([label, to]) => (
+              {[['Home', '/'], ['Products', '/products'], ['Categories', '/products'], ['About Us', '/about'], ['Contact', '/contact']].map(([label, to]) => (
                 <li key={label}><Link to={to} className="text-sm hover:text-primary-400 transition-colors">{label}</Link></li>
               ))}
             </ul>
@@ -60,7 +60,7 @@ export default function Footer() {
           <div>
             <h4 className="text-white font-heading font-semibold text-base mb-4">Information</h4>
             <ul className="space-y-2.5">
-              {[['Privacy Policy', '/privacy'], ['Terms of Service', '/terms']].map(([label, to]) => (
+              {[['Privacy Policy', '/privacy'], ['Terms of Service', '/terms'], ['About Us', '/about'], ['Contact Us', '/contact']].map(([label, to]) => (
                 <li key={label}><Link to={to} className="text-sm hover:text-primary-400 transition-colors">{label}</Link></li>
               ))}
             </ul>
