@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { settingsApi } from '@/services/api';
 
 const defaults = {
-  store_name: 'M.S. Store',
+  store_name: '',
   store_tagline: 'Your Trusted Shopping Destination',
   store_description: 'We offer a wide range of quality products at the best prices.',
   phone: '03046428782',
@@ -20,21 +20,42 @@ const defaults = {
   map_embed: '',
 };
 
-const SettingsContext = createContext({ settings: defaults, refreshSettings: () => {} });
+const CACHE_KEY = 'ms_store_settings';
+
+function loadCachedSettings() {
+  try {
+    const cached = localStorage.getItem(CACHE_KEY);
+    if (cached) return JSON.parse(cached);
+  } catch {}
+  return null;
+}
+
+function saveSettingsCache(data) {
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); } catch {}
+}
+
+const SettingsContext = createContext({ settings: defaults, loading: true, refreshSettings: () => {} });
 
 export function SettingsProvider({ children }) {
-  const [settings, setSettings] = useState(defaults);
+  const cached = loadCachedSettings();
+  const [settings, setSettings] = useState(cached ? { ...defaults, ...cached } : defaults);
+  const [loading, setLoading] = useState(!cached);
 
   const fetchSettings = () => {
     settingsApi.get()
-      .then(res => setSettings({ ...defaults, ...res.data.data.settings }))
-      .catch(() => {});
+      .then(res => {
+        const fresh = { ...defaults, ...res.data.data.settings };
+        setSettings(fresh);
+        saveSettingsCache(fresh);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
   };
 
   useEffect(() => { fetchSettings(); }, []);
 
   return (
-    <SettingsContext.Provider value={{ settings, refreshSettings: fetchSettings }}>
+    <SettingsContext.Provider value={{ settings, loading, refreshSettings: fetchSettings }}>
       {children}
     </SettingsContext.Provider>
   );

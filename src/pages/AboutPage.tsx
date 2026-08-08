@@ -28,12 +28,12 @@ export default function AboutPage() {
       <section className="py-16 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
-              <div className="relative inline-block">
+            <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} className="flex justify-center md:justify-start">
+              <div className="relative inline-block md:ml-32">
                 <img
                   src="/images/IMG-20230525-WA0037.jpg"
                   alt="Shop Owner"
-                  className="w-72 h-80 object-cover object-top rounded-3xl shadow-xl"
+                  className="w-80 h-[22rem] object-cover object-top rounded-3xl shadow-xl"
                 />
                 <div className="absolute -bottom-4 -right-4 bg-white rounded-2xl shadow-lg p-4">
                   <div className="flex items-center gap-2">

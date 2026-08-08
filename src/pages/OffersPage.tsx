@@ -12,7 +12,7 @@ export default function OffersPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    document.title = 'Offers & Deals | M.S. Store';
+    document.title = 'Offers & Deals';
     supabase.from('offers').select('*').eq('status', 'active').order('created_at', { ascending: false })
       .then(({ data }) => { setOffers(data || []); setLoading(false); });
   }, []);

@@ -22,7 +22,7 @@ interface Settings {
 }
 
 const defaultSettings: Settings = {
-  store_name: 'M.S. Store',
+  store_name: '',
   store_tagline: 'Your Trusted Shopping Destination',
   store_description: 'We offer a wide range of quality products at the best prices.',
   phone: '03046428782',
@@ -40,18 +40,36 @@ const defaultSettings: Settings = {
   map_embed: '',
 };
 
+const CACHE_KEY = 'ms_store_settings';
+
+function loadCachedSettings(): Settings | null {
+  try {
+    const cached = localStorage.getItem(CACHE_KEY);
+    if (cached) return JSON.parse(cached);
+  } catch {}
+  return null;
+}
+
+function saveSettingsCache(data: Settings) {
+  try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); } catch {}
+}
+
 interface SettingsContextType {
   settings: Settings;
+  loading: boolean;
   refreshSettings: () => void;
 }
 
 const SettingsContext = createContext<SettingsContextType>({
   settings: defaultSettings,
+  loading: true,
   refreshSettings: () => {},
 });
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
-  const [settings, setSettings] = useState<Settings>(defaultSettings);
+  const cached = loadCachedSettings();
+  const [settings, setSettings] = useState<Settings>(cached ? { ...defaultSettings, ...cached } : defaultSettings);
+  const [loading, setLoading] = useState(!cached);
 
   const fetchSettings = async () => {
     const { data } = await supabase.from('settings').select('key, value');
@@ -59,13 +77,15 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       const map = { ...defaultSettings };
       data.forEach(({ key, value }) => { if (value !== null) map[key] = value; });
       setSettings(map);
+      saveSettingsCache(map);
     }
+    setLoading(false);
   };
 
   useEffect(() => { fetchSettings(); }, []);
 
   return (
-    <SettingsContext.Provider value={{ settings, refreshSettings: fetchSettings }}>
+    <SettingsContext.Provider value={{ settings, loading, refreshSettings: fetchSettings }}>
       {children}
     </SettingsContext.Provider>
   );

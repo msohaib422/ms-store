@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+const Setting = require('../models/Settings');
 
 const createTransporter = () => {
   return nodemailer.createTransport({
@@ -12,6 +13,15 @@ const createTransporter = () => {
   });
 };
 
+const getStoreName = async () => {
+  try {
+    const setting = await Setting.findOne({ key: 'store_name' });
+    return setting?.value || '';
+  } catch {
+    return '';
+  }
+};
+
 const sendContactEmail = async ({ name, email, phone, subject, message }) => {
   if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
     console.warn('SMTP credentials not configured — email not sent');
@@ -21,12 +31,13 @@ const sendContactEmail = async ({ name, email, phone, subject, message }) => {
   const transporter = createTransporter();
   const contactEmail = process.env.CONTACT_EMAIL || 'www.msohaib422@gmail.com';
   const submittedAt = new Date().toLocaleString('en-PK', { timeZone: 'Asia/Karachi' });
+  const storeName = await getStoreName();
 
   const html = `
     <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#f9fafb;padding:24px;border-radius:12px;">
       <div style="background:#1d4ed8;padding:20px 24px;border-radius:8px 8px 0 0;">
         <h1 style="color:white;margin:0;font-size:20px;">New Contact Form Submission</h1>
-        <p style="color:#bfdbfe;margin:4px 0 0;font-size:14px;">M.S. Store</p>
+        ${storeName ? `<p style="color:#bfdbfe;margin:4px 0 0;font-size:14px;">${storeName}</p>` : ''}
       </div>
       <div style="background:white;padding:24px;border-radius:0 0 8px 8px;border:1px solid #e5e7eb;border-top:none;">
         <table style="width:100%;border-collapse:collapse;">
@@ -47,8 +58,9 @@ const sendContactEmail = async ({ name, email, phone, subject, message }) => {
     </div>
   `;
 
+  const fromName = storeName || 'Store';
   await transporter.sendMail({
-    from: `"M.S. Store" <${process.env.SMTP_USER}>`,
+    from: `"${fromName}" <${process.env.SMTP_USER}>`,
     to: contactEmail,
     subject: `New Message: ${subject || 'Contact Form'} — from ${name}`,
     html,

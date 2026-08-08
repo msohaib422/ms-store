@@ -3,13 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="M.S. Store – Quality Products at Unbeatable Prices. Visit us at Street No. 8, Mohallah Hussain Nagar, Jaranwala, Faisalabad." />
-    <meta property="og:title" content="M.S. Store" />
-    <meta property="og:description" content="Your trusted local shopping destination in Jaranwala, Faisalabad." />
-    <title>M.S. Store</title>
+    <meta name="description" content="Quality Products at Unbeatable Prices." />
+    <meta property="og:title" content="Online Store" />
+    <meta property="og:description" content="Your trusted local shopping destination." />
+    <title>Online Store</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <script>
+      try {
+        var c = JSON.parse(localStorage.getItem('ms_store_settings'));
+        if (c && c.store_name) {
+          document.title = c.store_name;
+          document.querySelector('meta[property="og:title"]').setAttribute('content', c.store_name);
+        }
+      } catch(e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

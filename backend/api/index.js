@@ -53,7 +53,7 @@ app.use(cookieParser());
 if (process.env.NODE_ENV !== 'production') app.use(morgan('dev'));
 
 app.get('/', (_, res) => res.json({ 
-  name: 'M.S. Store API', 
+  name: 'Store API', 
   version: '1.0.0',
   status: 'running',
   endpoints: {

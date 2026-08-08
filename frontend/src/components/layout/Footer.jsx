@@ -10,7 +10,7 @@ export default function Footer() {
   return (
     <footer className="bg-neutral-900 text-neutral-300">
       {/* CTA strip */}
-      <div className="bg-primary-700">
+      <div className="bg-primary-800 border-b border-primary-600/30">
         <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <div>
             <h3 className="text-white font-heading font-bold text-xl">Visit Our Store Today</h3>

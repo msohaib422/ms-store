@@ -22,12 +22,12 @@ export default function AboutPage() {
       <section className="py-16 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
-              <div className="relative inline-block">
+            <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} className="flex justify-center md:justify-start">
+              <div className="relative inline-block md:ml-32">
                 <img
                   src="/images/IMG-20230525-WA0037.jpg"
-                  alt="Shop Owner M. Sohaib"
-                  className="w-72 h-80 object-cover object-top rounded-3xl shadow-xl"
+                  alt="Shop Owner Mehar Sajid"
+                  className="w-80 h-[22rem] object-cover object-top rounded-3xl shadow-xl"
                 />
                 <div className="absolute -bottom-4 -right-4 bg-white rounded-2xl shadow-lg p-4">
                   <div className="flex items-center gap-2">
@@ -39,15 +39,15 @@ export default function AboutPage() {
             </motion.div>
             <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
               <span className="text-primary-600 font-medium text-sm uppercase tracking-wider">Meet the Owner</span>
-              <h2 className="font-heading font-bold text-3xl text-neutral-900 mt-2 mb-4">M. Sohaib</h2>
+              <h2 className="font-heading font-bold text-3xl text-neutral-900 mt-2 mb-4">Mehar Sajid</h2>
               <p className="text-neutral-600 leading-relaxed mb-4">
-                Welcome to <strong>{settings.store_name}</strong>! I'm M. Sohaib, the founder and owner. My mission is simple: to provide quality products at honest prices, with service you can trust.
+                Welcome to <strong>{settings.store_name}</strong>! I'm Mehar Sajid, the founder and owner. My mission is simple to provide quality products at honest prices, with service you can trust.
               </p>
               <p className="text-neutral-600 leading-relaxed mb-4">
                 Located at <strong>Street No. 8, Mohallah Hussain Nagar, 240 Mor, Jaranwala, Faisalabad</strong>, we serve our local community with dedication and pride.
               </p>
               <p className="text-neutral-600 leading-relaxed mb-6">
-                Every product in our store is carefully selected to ensure the highest quality standards. Customer satisfaction is our top priority — always.
+                Every product in our store is carefully selected to ensure the highest quality standards. Customer satisfaction is our top priority always.
               </p>
               <div className="flex flex-wrap gap-3">
                 <a href={waUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-medium px-5 py-2.5 rounded-xl transition-colors">
@@ -83,13 +83,13 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="py-16 bg-primary-700 text-white px-4">
+      <section className="py-16 bg-primary-100 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            {[['500+', 'Products'], ['1000+', 'Happy Customers'], ['5★', 'Rating'], ['24/7', 'Customer Support']].map(([value, label]) => (
+            {[['100+', 'Products'], ['500+', 'Happy Customers'], ['5★', 'Rating'], ['24/7', 'Customer Support']].map(([value, label]) => (
               <div key={label}>
-                <p className="font-heading font-extrabold text-4xl text-white">{value}</p>
-                <p className="text-primary-200 mt-1">{label}</p>
+                <p className="font-heading font-extrabold text-4xl text-primary-600">{value}</p>
+                <p className="text-slate-500 mt-1">{label}</p>
               </div>
             ))}
           </div>
