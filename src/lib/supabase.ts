@@ -22,6 +22,12 @@ export type Database = {
   };
 };
 
+export interface ProductVariant {
+  name: string;
+  price: number;
+  discountPrice: number | null;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -30,6 +36,7 @@ export interface Product {
   short_description: string | null;
   price: number;
   discount_price: number | null;
+  variants: ProductVariant[];
   category_id: string | null;
   brand: string | null;
   sku: string | null;

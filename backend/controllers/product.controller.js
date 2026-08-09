@@ -11,7 +11,7 @@ cloudinary.config({
 });
 
 const extractPublicId = (url) => {
-  if (!url) return null;
+  if (!url || typeof url !== 'string') return null;
   const parts = url.split('/');
   const uploadIndex = parts.findIndex(p => p === 'upload');
   if (uploadIndex === -1) return null;
@@ -19,11 +19,32 @@ const extractPublicId = (url) => {
   return publicIdWithExt.split('.')[0];
 };
 
-const deleteFromCloudinary = async (urls) => {
-  if (!urls || !urls.length) return;
-  const publicIds = urls.map(extractPublicId).filter(Boolean);
-  if (!publicIds.length) return;
-  await Promise.all(publicIds.map(id => cloudinary.uploader.destroy(id)));
+const deleteFromCloudinary = async (images, publicIds) => {
+  const idsToDelete = [];
+
+  if (publicIds && publicIds.length) {
+    idsToDelete.push(...publicIds.filter(Boolean));
+  }
+
+  if (images && images.length) {
+    for (const img of images) {
+      if (typeof img === 'string' && !img.startsWith('http')) {
+        idsToDelete.push(img);
+      } else if (typeof img === 'string') {
+        const id = extractPublicId(img);
+        if (id) idsToDelete.push(id);
+      }
+    }
+  }
+
+  if (!idsToDelete.length) return;
+
+  const unique = [...new Set(idsToDelete)];
+  const results = await Promise.allSettled(unique.map(id => cloudinary.uploader.destroy(id)));
+  const failures = results.filter(r => r.status === 'rejected');
+  if (failures.length) {
+    console.error('Cloudinary deletion failures:', failures.map(f => f.reason?.message));
+  }
 };
 
 const getProducts = async (req, res) => {
@@ -46,8 +67,31 @@ const getProducts = async (req, res) => {
     if (cat) filter.category = cat._id;
   }
 
-  if (minPrice) filter.price = { ...filter.price, $gte: Number(minPrice) };
-  if (maxPrice) filter.price = { ...filter.price, $lte: Number(maxPrice) };
+  if (minPrice || maxPrice) {
+    const priceFilter = {};
+    if (minPrice) priceFilter.$gte = Number(minPrice);
+    if (maxPrice) priceFilter.$lte = Number(maxPrice);
+    filter.$expr = {
+      $let: {
+        vars: {
+          effectivePrice: {
+            $cond: {
+              if: { $gt: [{ $size: { $ifNull: ['$variants', []] } }, 0] },
+              then: { $min: '$variants.price' },
+              else: '$price',
+            },
+          },
+        },
+        in: {
+          $and: [
+            ...(minPrice ? [{ $gte: ['$$effectivePrice', Number(minPrice)] }] : []),
+            ...(maxPrice ? [{ $lte: ['$$effectivePrice', Number(maxPrice)] }] : []),
+          ],
+        },
+      },
+    };
+  }
+
   if (featured === 'true') filter.isFeatured = true;
 
   const sortMap = {
@@ -116,9 +160,12 @@ const updateProduct = async (req, res) => {
 
   const oldImages = product.images || [];
   const newImages = req.body.images || [];
+  const oldPublicIds = product.imagePublicIds || [];
+  const newPublicIds = req.body.imagePublicIds || [];
 
   const deletedImages = oldImages.filter(img => !newImages.includes(img));
-  await deleteFromCloudinary(deletedImages);
+  const deletedPublicIds = oldPublicIds.filter(id => !newPublicIds.includes(id));
+  await deleteFromCloudinary(deletedImages, deletedPublicIds);
 
   Object.assign(product, req.body);
   await product.save();
@@ -140,7 +187,7 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
   const product = await Product.findByIdAndDelete(req.params.id);
   if (!product) return error(res, 'Product not found', 404);
-  await deleteFromCloudinary(product.images);
+  await deleteFromCloudinary(product.images, product.imagePublicIds);
 
   createNotification({
     type: 'product',

@@ -1,10 +1,19 @@
 import { useState, useRef } from 'react';
 import { ImagePlus, X, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { uploadFile } from '@/services/api';
+import { uploadFile, deleteImage } from '@/services/api';
+
+function getImageUrl(item) {
+  return typeof item === 'string' ? item : item?.url || '';
+}
+
+function getImagePublicId(item) {
+  return typeof item === 'object' && item !== null ? item.publicId || null : null;
+}
 
 export default function ImageUpload({ value = [], onChange, maxFiles = 5, single = false }) {
   const [uploading, setUploading] = useState(false);
+  const [removing, setRemoving] = useState(null);
   const inputRef = useRef(null);
 
   const handleFiles = async (files) => {
@@ -19,8 +28,8 @@ export default function ImageUpload({ value = [], onChange, maxFiles = 5, single
     for (const file of toUpload) {
       if (file.size > 5 * 1024 * 1024) { toast.error(`${file.name} is too large (max 5MB)`); continue; }
       try {
-        const url = await uploadFile(file);
-        results.push(url);
+        const { url, publicId } = await uploadFile(file);
+        results.push({ url, publicId });
       } catch {
         toast.error(`Failed to upload ${file.name}`);
       }
@@ -34,19 +43,42 @@ export default function ImageUpload({ value = [], onChange, maxFiles = 5, single
     if (inputRef.current) inputRef.current.value = '';
   };
 
-  const remove = (i) => onChange(value.filter((_, idx) => idx !== i));
+  const remove = async (i) => {
+    const item = value[i];
+    const publicId = getImagePublicId(item);
+
+    if (publicId) {
+      setRemoving(i);
+      try {
+        await deleteImage(publicId);
+      } catch {
+        toast.error('Failed to delete image from Cloudinary');
+      }
+      setRemoving(null);
+    }
+
+    onChange(value.filter((_, idx) => idx !== i));
+  };
 
   return (
     <div>
       <div className="flex flex-wrap gap-3 mb-3">
-        {value.map((url, i) => (
-          <div key={i} className="relative group w-24 h-24 rounded-xl overflow-hidden border border-neutral-200">
-            <img src={url} alt="" className="w-full h-full object-cover" />
-            <button type="button" onClick={() => remove(i)} className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full items-center justify-center hidden group-hover:flex">
-              <X size={12} />
-            </button>
-          </div>
-        ))}
+        {value.map((item, i) => {
+          const url = getImageUrl(item);
+          return (
+            <div key={i} className="relative group w-24 h-24 rounded-xl overflow-hidden border border-neutral-200">
+              <img src={url} alt="" className="w-full h-full object-cover" />
+              <button
+                type="button"
+                onClick={() => remove(i)}
+                disabled={removing === i}
+                className="absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full items-center justify-center hidden group-hover:flex disabled:opacity-50"
+              >
+                {removing === i ? <Loader2 size={12} className="animate-spin" /> : <X size={12} />}
+              </button>
+            </div>
+          );
+        })}
         {(single ? value.length === 0 : value.length < maxFiles) && (
           <button
             type="button"

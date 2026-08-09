@@ -92,8 +92,18 @@ export default function AdminProducts() {
                     </td>
                     <td className="px-4 py-3 text-neutral-500">{(p as any).categories?.name || '–'}</td>
                     <td className="px-4 py-3">
-                      <p className="font-semibold text-primary-700">Rs. {(p.discount_price || p.price).toLocaleString()}</p>
-                      {p.discount_price && <p className="text-xs text-neutral-400 line-through">Rs. {p.price.toLocaleString()}</p>}
+                      {p.variants?.length > 0 ? (
+                        <div>
+                          <p className="font-semibold text-primary-700">Rs. {(p.variants[0].discountPrice || p.variants[0].price).toLocaleString()}</p>
+                          {p.variants[0].discountPrice && <p className="text-xs text-neutral-400 line-through">Rs. {p.variants[0].price.toLocaleString()}</p>}
+                          {p.variants.length > 1 && <p className="text-xs text-neutral-400 mt-0.5">+{(p.variants.length - 1)} more</p>}
+                        </div>
+                      ) : (
+                        <div>
+                          <p className="font-semibold text-primary-700">Rs. {(p.discount_price || p.price).toLocaleString()}</p>
+                          {p.discount_price && <p className="text-xs text-neutral-400 line-through">Rs. {p.price.toLocaleString()}</p>}
+                        </div>
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       <span className={`font-medium ${p.stock === 0 ? 'text-red-600' : p.stock < 5 ? 'text-amber-600' : 'text-secondary-600'}`}>{p.stock}</span>
@@ -142,8 +152,18 @@ export default function AdminProducts() {
 
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="font-semibold text-primary-700">Rs. {(p.discount_price || p.price).toLocaleString()}</p>
-                    {p.discount_price && <p className="text-xs text-neutral-400 line-through">Rs. {p.price.toLocaleString()}</p>}
+                    {p.variants?.length > 0 ? (
+                      <>
+                        <p className="font-semibold text-primary-700">Rs. {(p.variants[0].discountPrice || p.variants[0].price).toLocaleString()}</p>
+                        {p.variants[0].discountPrice && <p className="text-xs text-neutral-400 line-through">Rs. {p.variants[0].price.toLocaleString()}</p>}
+                        {p.variants.length > 1 && <p className="text-xs text-neutral-400 mt-0.5">+{(p.variants.length - 1)} more variant{p.variants.length > 2 ? 's' : ''}</p>}
+                      </>
+                    ) : (
+                      <>
+                        <p className="font-semibold text-primary-700">Rs. {(p.discount_price || p.price).toLocaleString()}</p>
+                        {p.discount_price && <p className="text-xs text-neutral-400 line-through">Rs. {p.price.toLocaleString()}</p>}
+                      </>
+                    )}
                   </div>
                   <div className="flex items-center gap-2">
                     <span className={`text-xs font-medium ${p.stock === 0 ? 'text-red-600' : p.stock < 5 ? 'text-amber-600' : 'text-secondary-600'}`}>

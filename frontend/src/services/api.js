@@ -86,7 +86,12 @@ export const uploadFile = async (file) => {
   const res = await api.post('/upload', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
-  return res.data.data.secure_url;
+  return { url: res.data.data.secure_url, publicId: res.data.data.public_id };
+};
+
+export const deleteImage = async (publicId) => {
+  const res = await api.delete(`/upload/${encodeURIComponent(publicId)}`);
+  return res.data;
 };
 
 export default api;

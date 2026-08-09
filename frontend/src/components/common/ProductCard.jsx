@@ -6,8 +6,13 @@ import { useSettings } from '@/context/SettingsContext';
 export default function ProductCard({ product, index = 0 }) {
   const { settings } = useSettings();
   const thumb = product.images?.[0] || 'https://images.pexels.com/photos/5632397/pexels-photo-5632397.jpeg?auto=compress&cs=tinysrgb&w=400';
-  const finalPrice = product.discountPrice || product.price;
-  const discount = product.discountPrice ? Math.round((1 - product.discountPrice / product.price) * 100) : null;
+  const hasVariants = product.variants?.length > 0;
+  const firstVariant = hasVariants ? product.variants[0] : null;
+  const finalPrice = hasVariants ? (firstVariant.discountPrice || firstVariant.price) : (product.discountPrice || product.price);
+  const originalPrice = hasVariants ? firstVariant.price : product.price;
+  const discount = hasVariants
+    ? (firstVariant.discountPrice ? Math.round((1 - firstVariant.discountPrice / firstVariant.price) * 100) : null)
+    : (product.discountPrice ? Math.round((1 - product.discountPrice / product.price) * 100) : null);
   const waMsg = `Hello,\n\nI want to order this product.\n\nProduct Name: ${product.name}\nPrice: Rs. ${finalPrice}\n\nPlease let me know its availability.`;
   const waUrl = `https://wa.me/92${settings.whatsapp.replace(/^0/, '')}?text=${encodeURIComponent(waMsg)}`;
 
@@ -49,10 +54,21 @@ export default function ProductCard({ product, index = 0 }) {
           ))}
           {product.reviewsCount > 0 && <span className="text-xs text-neutral-400 ml-1">({product.reviewsCount})</span>}
         </div>
+
+        {hasVariants && product.variants.length > 1 && (
+          <div className="flex flex-wrap gap-1 mb-2">
+            {product.variants.map((v, i) => (
+              <span key={i} className="text-[10px] px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-500 font-medium">
+                {v.name}
+              </span>
+            ))}
+          </div>
+        )}
+
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-end gap-2">
             <span className="text-lg font-bold text-primary-700">Rs. {finalPrice.toLocaleString()}</span>
-            {product.discountPrice && <span className="text-sm text-neutral-400 line-through">Rs. {product.price.toLocaleString()}</span>}
+            {discount !== null && <span className="text-sm text-neutral-400 line-through">Rs. {originalPrice.toLocaleString()}</span>}
           </div>
           {product.brand && <span className="text-xs text-neutral-400 flex items-center gap-1"><Tag size={10} />{product.brand}</span>}
         </div>

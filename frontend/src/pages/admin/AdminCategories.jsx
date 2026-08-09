@@ -161,11 +161,11 @@ export default function AdminCategories() {
                 </div>
                 <div className="sm:col-span-2">
                   <label className="block text-sm font-medium text-neutral-700 mb-2">Category Image</label>
-                  <ImageUpload value={imageUrl ? [imageUrl] : []} onChange={urls => setValue('imageUrl', urls[0] || '')} single />
+                  <ImageUpload value={imageUrl ? [imageUrl] : []} onChange={urls => { const item = urls[0]; setValue('imageUrl', typeof item === 'string' ? item : item?.url || ''); }} single />
                 </div>
                 <div className="sm:col-span-2">
                   <label className="block text-sm font-medium text-neutral-700 mb-2">Banner Image</label>
-                  <ImageUpload value={bannerUrl ? [bannerUrl] : []} onChange={urls => setValue('bannerUrl', urls[0] || '')} single />
+                  <ImageUpload value={bannerUrl ? [bannerUrl] : []} onChange={urls => { const item = urls[0]; setValue('bannerUrl', typeof item === 'string' ? item : item?.url || ''); }} single />
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 pt-2 border-t border-neutral-100">

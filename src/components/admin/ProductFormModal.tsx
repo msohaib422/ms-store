@@ -1,9 +1,9 @@
-import { useEffect } from 'react';
-import { X, Save } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { X, Save, Plus, Trash2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
-import { supabase, type Product, type Category } from '@/lib/supabase';
+import { supabase, type Product, type ProductVariant, type Category } from '@/lib/supabase';
 import ImageUpload from './ImageUpload';
 
 interface FormData {
@@ -11,8 +11,6 @@ interface FormData {
   slug: string;
   short_description: string;
   description: string;
-  price: number;
-  discount_price: number | '';
   category_id: string;
   brand: string;
   sku: string;
@@ -26,6 +24,12 @@ interface FormData {
   tags: string;
 }
 
+interface VariantInput {
+  name: string;
+  price: number | '';
+  discountPrice: number | '';
+}
+
 interface Props {
   product: Product | null;
   categories: Category[];
@@ -34,14 +38,18 @@ interface Props {
 }
 
 export default function ProductFormModal({ product, categories, onClose, onSaved }: Props) {
+  const [variants, setVariants] = useState<VariantInput[]>(() => {
+    if (product?.variants?.length) return product.variants.map(v => ({ name: v.name, price: v.price, discountPrice: v.discountPrice ?? '' }));
+    if (product?.price) return [{ name: '', price: product.price, discountPrice: product.discount_price ?? '' }];
+    return [{ name: '', price: 0, discountPrice: '' }];
+  });
+
   const { register, handleSubmit, setValue, watch, formState: { isSubmitting } } = useForm<FormData>({
     defaultValues: {
       name: product?.name || '',
       slug: product?.slug || '',
       short_description: product?.short_description || '',
       description: product?.description || '',
-      price: product?.price || 0,
-      discount_price: product?.discount_price || '',
       category_id: product?.category_id || '',
       brand: product?.brand || '',
       sku: product?.sku || '',
@@ -65,11 +73,43 @@ export default function ProductFormModal({ product, categories, onClose, onSaved
     }
   }, [nameVal, product, setValue]);
 
+  const updateVariant = (index: number, field: keyof VariantInput, value: string | number) => {
+    setVariants(prev => prev.map((v, i) => i === index ? { ...v, [field]: value } : v));
+  };
+
+  const addVariant = () => {
+    setVariants(prev => [...prev, { name: '', price: 0, discountPrice: '' }]);
+  };
+
+  const removeVariant = (index: number) => {
+    if (variants.length <= 1) { toast.error('At least one price option is required'); return; }
+    setVariants(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const validateVariants = (): boolean => {
+    for (let i = 0; i < variants.length; i++) {
+      const v = variants[i];
+      if (!v.name.trim()) { toast.error(`Variant ${i + 1}: Name is required`); return false; }
+      if (!v.price || Number(v.price) <= 0) { toast.error(`Variant "${v.name}": Price must be greater than 0`); return false; }
+      if (v.discountPrice && Number(v.discountPrice) >= Number(v.price)) { toast.error(`Variant "${v.name}": Discount price must be less than original price`); return false; }
+    }
+    return true;
+  };
+
   const onSubmit = async (data: FormData) => {
+    if (!validateVariants()) return;
+
+    const parsedVariants: ProductVariant[] = variants.map(v => ({
+      name: v.name.trim(),
+      price: Number(v.price),
+      discountPrice: v.discountPrice !== '' && v.discountPrice != null ? Number(v.discountPrice) : null,
+    }));
+
     const payload = {
       ...data,
-      price: Number(data.price),
-      discount_price: data.discount_price !== '' ? Number(data.discount_price) : null,
+      variants: parsedVariants,
+      price: Number(variants[0]?.price) || 0,
+      discount_price: variants[0]?.discountPrice !== '' && variants[0]?.discountPrice != null ? Number(variants[0].discountPrice) : null,
       stock: Number(data.stock),
       tags: data.tags ? data.tags.split(',').map(t => t.trim()).filter(Boolean) : [],
       updated_at: new Date().toISOString(),
@@ -99,7 +139,7 @@ export default function ProductFormModal({ product, categories, onClose, onSaved
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-neutral-700 mb-1.5">Product Name *</label>
-              <input {...register('name', { required: true })} placeholder="e.g. Wireless Bluetooth Headphones" className="input" />
+              <input {...register('name', { required: true })} placeholder="e.g. Tapal Tea" className="input" />
             </div>
             <div>
               <label className="block text-sm font-medium text-neutral-700 mb-1.5">Slug</label>
@@ -113,20 +153,12 @@ export default function ProductFormModal({ product, categories, onClose, onSaved
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-1.5">Price (Rs.) *</label>
-              <input type="number" step="0.01" {...register('price', { required: true })} placeholder="e.g. 1500" className="input" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-1.5">Discount Price (Rs.)</label>
-              <input type="number" step="0.01" {...register('discount_price')} className="input" placeholder="Leave empty if no discount" />
-            </div>
-            <div>
               <label className="block text-sm font-medium text-neutral-700 mb-1.5">Brand</label>
-              <input {...register('brand')} placeholder="e.g. Samsung, Sony" className="input" />
+              <input {...register('brand')} placeholder="e.g. Tapal, Brooke Bond" className="input" />
             </div>
             <div>
               <label className="block text-sm font-medium text-neutral-700 mb-1.5">SKU</label>
-              <input {...register('sku')} placeholder="e.g. WBH-2024-BLK" className="input" />
+              <input {...register('sku')} placeholder="e.g. TPL-250G" className="input" />
             </div>
             <div>
               <label className="block text-sm font-medium text-neutral-700 mb-1.5">Stock</label>
@@ -149,11 +181,11 @@ export default function ProductFormModal({ product, categories, onClose, onSaved
             </div>
             <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-neutral-700 mb-1.5">Tags (comma separated)</label>
-              <input {...register('tags')} className="input" placeholder="e.g. sale, new, electronics" />
+              <input {...register('tags')} className="input" placeholder="e.g. tea, grocery, essential" />
             </div>
             <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-neutral-700 mb-1.5">Search Keywords</label>
-              <input {...register('search_keywords')} placeholder="e.g. headphones, wireless, bluetooth" className="input" />
+              <input {...register('search_keywords')} placeholder="e.g. tea, tapal, green tea" className="input" />
             </div>
           </div>
 
@@ -165,6 +197,79 @@ export default function ProductFormModal({ product, categories, onClose, onSaved
                 <span className="text-sm font-medium text-neutral-700">{label}</span>
               </label>
             ))}
+          </div>
+
+          {/* Price Options / Variants */}
+          <div className="border border-neutral-200 rounded-xl p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <label className="block text-sm font-semibold text-neutral-800">Price Options *</label>
+              <span className="text-xs text-neutral-400">{variants.length} variant{variants.length !== 1 ? 's' : ''}</span>
+            </div>
+
+            <div className="hidden sm:grid grid-cols-12 gap-2 text-xs font-medium text-neutral-500 uppercase tracking-wider px-1">
+              <div className="col-span-5">Variant / Size</div>
+              <div className="col-span-3">Price (Rs.) *</div>
+              <div className="col-span-3">Discount Price (Rs.)</div>
+              <div className="col-span-1" />
+            </div>
+
+            {variants.map((v, i) => (
+              <div key={i} className="grid grid-cols-1 sm:grid-cols-12 gap-2 items-start">
+                <div className="sm:col-span-5">
+                  <label className="sm:hidden text-xs font-medium text-neutral-500 mb-1 block">Variant / Size</label>
+                  <input
+                    type="text"
+                    value={v.name}
+                    onChange={e => updateVariant(i, 'name', e.target.value)}
+                    placeholder="e.g. 250g, Small, 500ml"
+                    className="input text-sm"
+                  />
+                </div>
+                <div className="sm:col-span-3">
+                  <label className="sm:hidden text-xs font-medium text-neutral-500 mb-1 block">Price (Rs.) *</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={v.price || ''}
+                    onChange={e => updateVariant(i, 'price', e.target.value)}
+                    placeholder="e.g. 50"
+                    className="input text-sm"
+                  />
+                </div>
+                <div className="sm:col-span-3">
+                  <label className="sm:hidden text-xs font-medium text-neutral-500 mb-1 block">Discount Price</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={v.discountPrice || ''}
+                    onChange={e => updateVariant(i, 'discountPrice', e.target.value)}
+                    placeholder="Optional"
+                    className="input text-sm"
+                  />
+                </div>
+                <div className="sm:col-span-1 flex items-end justify-center sm:justify-start pb-0.5">
+                  <button
+                    type="button"
+                    onClick={() => removeVariant(i)}
+                    disabled={variants.length <= 1}
+                    className="p-2 rounded-lg text-neutral-400 hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-30 disabled:hover:text-neutral-400 disabled:hover:bg-transparent"
+                    title="Remove variant"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </div>
+            ))}
+
+            <button
+              type="button"
+              onClick={addVariant}
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 border-2 border-dashed border-neutral-300 rounded-xl text-sm font-medium text-neutral-600 hover:border-primary-400 hover:text-primary-600 hover:bg-primary-50 transition-all"
+            >
+              <Plus size={16} /> Add Price Option
+            </button>
           </div>
 
           {/* Images */}

@@ -17,6 +17,7 @@ export default function ProductDetailPage() {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [imgIdx, setImgIdx] = useState(0);
+  const [selectedVariantIdx, setSelectedVariantIdx] = useState(0);
   const [reviewForm, setReviewForm] = useState({ customer_name: '', rating: 5, review: '' });
   const [submitting, setSubmitting] = useState(false);
 
@@ -27,6 +28,7 @@ export default function ProductDetailPage() {
     ]).then(([{ data }]) => {
       setProduct(data as Product | null);
       setLoading(false);
+      setSelectedVariantIdx(0);
       if (data) {
         supabase.from('reviews').select('*').eq('product_id', data.id).eq('is_approved', true).then(({ data: r }) => setReviews(r || []));
         if (data.category_id) {
@@ -40,8 +42,15 @@ export default function ProductDetailPage() {
   if (!product) return <MainLayout><div className="max-w-7xl mx-auto px-4 py-20 text-center"><p className="text-neutral-500">Product not found.</p><Link to="/products" className="btn-primary mt-4">Back to Products</Link></div></MainLayout>;
 
   const images = product.images?.length ? product.images : ['https://images.pexels.com/photos/5632397/pexels-photo-5632397.jpeg?auto=compress&cs=tinysrgb&w=600'];
-  const discount = product.discount_price ? Math.round((1 - product.discount_price / product.price) * 100) : null;
-  const waMsg = `Hello,\n\nI want to order this product.\n\nProduct Name: ${product.name}\nPrice: Rs. ${product.discount_price || product.price}\n\nPlease let me know its availability.`;
+  const hasVariants = product.variants?.length > 0;
+  const selectedVariant = hasVariants ? product.variants[selectedVariantIdx] : null;
+  const finalPrice = hasVariants ? (selectedVariant!.discountPrice || selectedVariant!.price) : (product.discount_price || product.price);
+  const originalPrice = hasVariants ? selectedVariant!.price : product.price;
+  const discount = hasVariants
+    ? (selectedVariant!.discountPrice ? Math.round((1 - selectedVariant!.discountPrice / selectedVariant!.price) * 100) : null)
+    : (product.discount_price ? Math.round((1 - product.discount_price / product.price) * 100) : null);
+  const variantLabel = hasVariants ? selectedVariant!.name : '';
+  const waMsg = `Hello,\n\nI want to order this product.\n\nProduct Name: ${product.name}${variantLabel ? `\nVariant: ${variantLabel}` : ''}\nPrice: Rs. ${finalPrice}\n\nPlease let me know its availability.`;
   const waUrl = `https://wa.me/92${settings.whatsapp.replace(/^0/, '')}?text=${encodeURIComponent(waMsg)}`;
 
   const submitReview = async () => {
@@ -104,10 +113,40 @@ export default function ProductDetailPage() {
               <span className="text-sm text-neutral-500">({product.reviews_count} reviews)</span>
             </div>
 
+            {/* Variant Selector */}
+            {hasVariants && (
+              <div className="mb-5">
+                <label className="block text-sm font-medium text-neutral-700 mb-2">Select Size / Option:</label>
+                <div className="flex flex-wrap gap-2">
+                  {product.variants.map((v, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => setSelectedVariantIdx(i)}
+                      className={`px-4 py-2 rounded-xl text-sm font-medium border-2 transition-all ${
+                        i === selectedVariantIdx
+                          ? 'border-primary-500 bg-primary-50 text-primary-700'
+                          : 'border-neutral-200 bg-white text-neutral-600 hover:border-neutral-300'
+                      }`}
+                    >
+                      {v.name}
+                      <span className="block text-xs mt-0.5 opacity-70">Rs. {(v.discountPrice || v.price).toLocaleString()}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Price */}
             <div className="flex items-end gap-3 mb-5">
-              <span className="text-3xl font-extrabold text-primary-700">Rs. {(product.discount_price || product.price).toLocaleString()}</span>
-              {product.discount_price && <span className="text-lg text-neutral-400 line-through">Rs. {product.price.toLocaleString()}</span>}
+              <span className="text-3xl font-extrabold text-primary-700">Rs. {finalPrice.toLocaleString()}</span>
+              {discount !== null && <span className="text-lg text-neutral-400 line-through">Rs. {originalPrice.toLocaleString()}</span>}
             </div>
+            {hasVariants && selectedVariant!.discountPrice && (
+              <p className="text-sm text-secondary-600 font-medium mb-2">
+                You save Rs. {(selectedVariant!.price - selectedVariant!.discountPrice).toLocaleString()} on {selectedVariant!.name}
+              </p>
+            )}
 
             {product.short_description && <p className="text-neutral-600 mb-5">{product.short_description}</p>}
 

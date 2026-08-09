@@ -36,4 +36,15 @@ router.post('/', protect, upload.single('file'), async (req, res) => {
   return success(res, { secure_url: result.secure_url, public_id: result.public_id });
 });
 
+router.delete('/:publicId', protect, async (req, res) => {
+  try {
+    const publicId = decodeURIComponent(req.params.publicId);
+    const result = await cloudinary.uploader.destroy(publicId);
+    if (result.result === 'not found') return error(res, 'Image not found on Cloudinary', 404);
+    return success(res, null, 'Image deleted from Cloudinary');
+  } catch (err) {
+    return error(res, 'Failed to delete image from Cloudinary');
+  }
+});
+
 module.exports = router;
