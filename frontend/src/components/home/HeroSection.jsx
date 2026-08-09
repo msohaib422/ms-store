@@ -48,7 +48,8 @@ export default function HeroSection() {
             <div className="relative">
               <div className="absolute inset-0 bg-primary-400/20 rounded-3xl blur-xl transform scale-110" />
               <img
-                src="https://images.pexels.com/photos/5632397/pexels-photo-5632397.jpeg?auto=compress&cs=tinysrgb&w=600"
+                // src="https://images.pexels.com/photos/5632397/pexels-photo-5632397.jpeg?auto=compress&cs=tinysrgb&w=600"
+                src="/images/2.png"
                 alt="Store products"
                 className="relative w-full rounded-3xl shadow-2xl object-cover h-[460px]"
               />
