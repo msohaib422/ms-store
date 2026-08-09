@@ -89,32 +89,32 @@ export default function ProductFormModal({ product, categories, onClose, onSaved
 
   return (
     <div className="fixed inset-0 bg-black/60 z-50 flex items-start justify-center overflow-y-auto p-4">
-      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl my-8">
-        <div className="flex items-center justify-between p-6 border-b border-neutral-200">
-          <h2 className="font-heading font-bold text-xl text-neutral-900">{product ? 'Edit Product' : 'Add New Product'}</h2>
+      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl my-4 sm:my-8">
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-neutral-200">
+          <h2 className="font-heading font-bold text-lg sm:text-xl text-neutral-900">{product ? 'Edit Product' : 'Add New Product'}</h2>
           <button onClick={onClose} className="p-2 rounded-lg hover:bg-neutral-100 transition-colors"><X size={20} /></button>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-5">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="col-span-2">
+        <form onSubmit={handleSubmit(onSubmit)} className="p-4 sm:p-6 space-y-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-neutral-700 mb-1.5">Product Name *</label>
-              <input {...register('name', { required: true })} className="input" />
+              <input {...register('name', { required: true })} placeholder="e.g. Wireless Bluetooth Headphones" className="input" />
             </div>
             <div>
               <label className="block text-sm font-medium text-neutral-700 mb-1.5">Slug</label>
-              <input {...register('slug', { required: true })} className="input" />
+              <input {...register('slug', { required: true })} placeholder="auto-generated-from-name" className="input" />
             </div>
             <div>
               <label className="block text-sm font-medium text-neutral-700 mb-1.5">Category</label>
               <select {...register('category_id')} className="input">
-                <option value="">Select category</option>
+                <option value="">Select a category</option>
                 {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-neutral-700 mb-1.5">Price (Rs.) *</label>
-              <input type="number" step="0.01" {...register('price', { required: true })} className="input" />
+              <input type="number" step="0.01" {...register('price', { required: true })} placeholder="e.g. 1500" className="input" />
             </div>
             <div>
               <label className="block text-sm font-medium text-neutral-700 mb-1.5">Discount Price (Rs.)</label>
@@ -122,15 +122,15 @@ export default function ProductFormModal({ product, categories, onClose, onSaved
             </div>
             <div>
               <label className="block text-sm font-medium text-neutral-700 mb-1.5">Brand</label>
-              <input {...register('brand')} className="input" />
+              <input {...register('brand')} placeholder="e.g. Samsung, Sony" className="input" />
             </div>
             <div>
               <label className="block text-sm font-medium text-neutral-700 mb-1.5">SKU</label>
-              <input {...register('sku')} className="input" />
+              <input {...register('sku')} placeholder="e.g. WBH-2024-BLK" className="input" />
             </div>
             <div>
               <label className="block text-sm font-medium text-neutral-700 mb-1.5">Stock</label>
-              <input type="number" {...register('stock')} className="input" />
+              <input type="number" {...register('stock')} placeholder="e.g. 50" className="input" />
             </div>
             <div>
               <label className="block text-sm font-medium text-neutral-700 mb-1.5">Status</label>
@@ -139,21 +139,21 @@ export default function ProductFormModal({ product, categories, onClose, onSaved
                 <option value="inactive">Inactive</option>
               </select>
             </div>
-            <div className="col-span-2">
+            <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-neutral-700 mb-1.5">Short Description</label>
-              <textarea {...register('short_description')} rows={2} className="input resize-none" />
+              <textarea {...register('short_description')} rows={2} placeholder="Brief summary shown in product listings" className="input resize-none" />
             </div>
-            <div className="col-span-2">
+            <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-neutral-700 mb-1.5">Full Description</label>
-              <textarea {...register('description')} rows={4} className="input resize-none" />
+              <textarea {...register('description')} rows={4} placeholder="Detailed product description with features and specifications" className="input resize-none" />
             </div>
-            <div className="col-span-2">
+            <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-neutral-700 mb-1.5">Tags (comma separated)</label>
               <input {...register('tags')} className="input" placeholder="e.g. sale, new, electronics" />
             </div>
-            <div className="col-span-2">
+            <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-neutral-700 mb-1.5">Search Keywords</label>
-              <input {...register('search_keywords')} className="input" />
+              <input {...register('search_keywords')} placeholder="e.g. headphones, wireless, bluetooth" className="input" />
             </div>
           </div>
 
@@ -173,11 +173,11 @@ export default function ProductFormModal({ product, categories, onClose, onSaved
             <ImageUpload value={images} onChange={urls => setValue('images', urls)} maxFiles={8} />
           </div>
 
-          <div className="flex gap-3 pt-2 border-t border-neutral-100">
-            <button type="submit" disabled={isSubmitting} className="btn-primary">
+          <div className="flex flex-col sm:flex-row gap-3 pt-2 border-t border-neutral-100">
+            <button type="submit" disabled={isSubmitting} className="btn-primary w-full sm:w-auto justify-center">
               <Save size={16} /> {isSubmitting ? 'Saving...' : product ? 'Update Product' : 'Create Product'}
             </button>
-            <button type="button" onClick={onClose} className="btn-secondary">Cancel</button>
+            <button type="button" onClick={onClose} className="btn-secondary w-full sm:w-auto justify-center">Cancel</button>
           </div>
         </form>
       </motion.div>
