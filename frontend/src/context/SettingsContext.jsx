@@ -7,7 +7,7 @@ const defaults = {
   store_description: 'We offer a wide range of quality products at the best prices.',
   phone: '03046428782',
   whatsapp: '03249503305',
-  email: 'www.msohaib422@gmail.com',
+  email: 'msohaib.ai.dev@gmail.com',
   address: 'Street No. 8, Mohallah Hussain Nagar, 240 Mor, Jaranwala, Faisalabad, Punjab, Pakistan',
   business_hours: 'Mon–Sun: 6:00 AM – 9:00 PM',
   facebook: '',

@@ -29,7 +29,7 @@ const sendContactEmail = async ({ name, email, phone, subject, message }) => {
   }
 
   const transporter = createTransporter();
-  const contactEmail = process.env.CONTACT_EMAIL || 'www.msohaib422@gmail.com';
+  const contactEmail = process.env.CONTACT_EMAIL || 'msohaib.ai.dev@gmail.com';
   const submittedAt = new Date().toLocaleString('en-PK', { timeZone: 'Asia/Karachi' });
   const storeName = await getStoreName();
 
@@ -75,7 +75,7 @@ const sendNotificationEmail = async ({ type, title, message, link = '', meta = {
   }
 
   const transporter = createTransporter();
-  const contactEmail = process.env.CONTACT_EMAIL || 'www.msohaib422@gmail.com';
+  const contactEmail = process.env.CONTACT_EMAIL || 'msohaib.ai.dev@gmail.com';
   const storeName = await getStoreName();
   const timestamp = new Date().toLocaleString('en-PK', { timeZone: 'Asia/Karachi' });
 

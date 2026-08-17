@@ -51,7 +51,7 @@ SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your_gmail@gmail.com
 SMTP_PASS=your_gmail_app_password
-CONTACT_EMAIL=www.msohaib422@gmail.com
+CONTACT_EMAIL=msohaib.ai.dev@gmail.com
 CLIENT_URL=https://your-frontend.vercel.app
 NODE_ENV=production
 ```
@@ -64,7 +64,7 @@ NODE_ENV=production
 
 The admin account is auto-created on first startup:
 
-- **Email:** www.msohaib422@gmail.com
+- **Email:** msohaib.ai.dev@gmail.com
 - **Password:** 12345678
 
 Visit `/admin/login` to access the dashboard.
