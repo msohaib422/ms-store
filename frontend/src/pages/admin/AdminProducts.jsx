@@ -19,9 +19,7 @@ export default function AdminProducts() {
   const [editing, setEditing] = useState(null);
 
   useEffect(() => {
-    categoriesApi.getAll().then(res => setCategories(res.data.data.categories)).catch(() => {
-      setCategories([]);
-    });
+    categoriesApi.getAll().then(res => setCategories(res.data.data.categories)).catch(() => {});
   }, []);
 
   const fetchProducts = useCallback(async () => {
@@ -32,7 +30,7 @@ export default function AdminProducts() {
       const res = await productsApi.getAll(params);
       setProducts(res.data.data.products);
       setTotal(res.data.data.total);
-    } catch (err) { console.error('Failed to fetch products:', err.message); setProducts([]); }
+    } catch { setProducts([]); }
     setLoading(false);
   }, [search, page]);
 

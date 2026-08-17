@@ -14,7 +14,7 @@ export default function AdminCategories() {
   const [editing, setEditing] = useState(null);
 
   const fetch = () => {
-    categoriesApi.getAll().then(res => { setCategories(res.data.data.categories); setLoading(false); }).catch(err => { console.error('Failed to fetch categories:', err.message); setLoading(false); });
+    categoriesApi.getAll().then(res => { setCategories(res.data.data.categories); setLoading(false); }).catch(() => setLoading(false));
   };
   useEffect(() => { fetch(); }, []);
 
