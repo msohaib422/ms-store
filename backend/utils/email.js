@@ -1,6 +1,13 @@
 const nodemailer = require('nodemailer');
 const Setting = require('../models/Settings');
 
+const getBaseUrl = () => {
+  if (process.env.CLIENT_URL) return process.env.CLIENT_URL.replace(/\/+$/, '');
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  if (process.env.VERCEL_BRANCH_URL) return `https://${process.env.VERCEL_BRANCH_URL}`;
+  return 'http://localhost:5173';
+};
+
 const createTransporter = () => {
   return nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'smtp.gmail.com',
@@ -32,7 +39,6 @@ const sendContactEmail = async ({ name, email, phone, subject, message }) => {
 const contactEmail = process.env.CONTACT_EMAIL || 'msohaib.ai.dev@gmail.com';
   const submittedAt = new Date().toLocaleString('en-PK', { timeZone: 'Asia/Karachi' });
   const storeName = await getStoreName();
-  const baseUrl = process.env.VITE_BASE_URL || 'http://localhost:5173';
 
   const html = `
     <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#f9fafb;padding:24px;border-radius:12px;">
@@ -79,7 +85,7 @@ const sendNotificationEmail = async ({ type, title, message, link = '', meta = {
   const contactEmail = process.env.CONTACT_EMAIL || 'msohaib.ai.dev@gmail.com';
   const storeName = await getStoreName();
   const timestamp = new Date().toLocaleString('en-PK', { timeZone: 'Asia/Karachi' });
-  const baseUrl = process.env.VITE_BASE_URL || 'http://localhost:5173';
+  const baseUrl = getBaseUrl();
 
   const typeColors = {
     review: '#f59e0b',
@@ -110,7 +116,8 @@ const sendNotificationEmail = async ({ type, title, message, link = '', meta = {
       return `<tr><td style="padding:8px 0;border-bottom:1px solid #f3f4f6;width:160px;"><strong style="color:#6b7280;font-size:13px;">${label.toUpperCase()}</strong></td><td style="padding:8px 0;border-bottom:1px solid #f3f4f6;font-size:14px;color:#111827;">${displayValue}</td></tr>`;
     }).join('');
 
-  const formattedLink = link && link.startsWith('/') ? `${baseUrl}${link}` : link;
+  const targetPath = link && link.startsWith('/') ? link : '/admin/products';
+  const formattedLink = `${baseUrl}/admin/login?redirect=${encodeURIComponent(targetPath)}`;
 
   const html = `
     <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#f9fafb;padding:24px;border-radius:12px;">

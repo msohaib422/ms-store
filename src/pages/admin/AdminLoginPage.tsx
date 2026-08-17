@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ShoppingBag, Eye, EyeOff, Lock, Mail } from 'lucide-react';
 import { useForm } from 'react-hook-form';
@@ -14,6 +14,8 @@ interface FormData {
 export default function AdminLoginPage() {
   const { signIn } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectTo = searchParams.get('redirect') || '/admin';
   const [showPass, setShowPass] = useState(false);
   const { register, handleSubmit, formState: { isSubmitting, errors } } = useForm<FormData>();
 
@@ -21,7 +23,7 @@ export default function AdminLoginPage() {
     const { error } = await signIn(data.email, data.password);
     if (error) { toast.error('Invalid credentials'); return; }
     toast.success('Welcome back!');
-    navigate('/admin');
+    navigate(redirectTo);
   };
 
   return (
