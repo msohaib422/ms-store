@@ -20,7 +20,7 @@ export default function ContactPage() {
           <div className="bg-white rounded-2xl shadow-card overflow-hidden border border-neutral-100">
             <div className="flex flex-col lg:flex-row">
               {/* Map – 55% */}
-              <div className="lg:w-[55%] h-72 lg:h-auto lg:min-h-[420px]">
+              <div className="lg:w-[55%] min-h-[420px]">
                 <div className="w-full h-full" dangerouslySetInnerHTML={{ __html: settings.map_embed }} />
               </div>
 
