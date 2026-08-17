@@ -29,15 +29,16 @@ const sendContactEmail = async ({ name, email, phone, subject, message }) => {
   }
 
   const transporter = createTransporter();
-  const contactEmail = process.env.CONTACT_EMAIL || 'msohaib.ai.dev@gmail.com';
+const contactEmail = process.env.CONTACT_EMAIL || 'msohaib.ai.dev@gmail.com';
   const submittedAt = new Date().toLocaleString('en-PK', { timeZone: 'Asia/Karachi' });
   const storeName = await getStoreName();
+  const baseUrl = process.env.VITE_BASE_URL || 'http://localhost:5173';
 
   const html = `
     <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#f9fafb;padding:24px;border-radius:12px;">
       <div style="background:#1d4ed8;padding:20px 24px;border-radius:8px 8px 0 0;">
         <h1 style="color:white;margin:0;font-size:20px;">New Contact Form Submission</h1>
-        ${storeName ? `<p style="color:#bfdbfe;margin:4px 0 0;font-size:14px;">${storeName}</p>` : ''}
+        ${storeName ? `<p style="color:white;margin:4px 0 0;font-size:14px;">${storeName}</p>` : ''}
       </div>
       <div style="background:white;padding:24px;border-radius:0 0 8px 8px;border:1px solid #e5e7eb;border-top:none;">
         <table style="width:100%;border-collapse:collapse;">
@@ -78,6 +79,7 @@ const sendNotificationEmail = async ({ type, title, message, link = '', meta = {
   const contactEmail = process.env.CONTACT_EMAIL || 'msohaib.ai.dev@gmail.com';
   const storeName = await getStoreName();
   const timestamp = new Date().toLocaleString('en-PK', { timeZone: 'Asia/Karachi' });
+  const baseUrl = process.env.VITE_BASE_URL || 'http://localhost:5173';
 
   const typeColors = {
     review: '#f59e0b',
@@ -108,6 +110,8 @@ const sendNotificationEmail = async ({ type, title, message, link = '', meta = {
       return `<tr><td style="padding:8px 0;border-bottom:1px solid #f3f4f6;width:160px;"><strong style="color:#6b7280;font-size:13px;">${label.toUpperCase()}</strong></td><td style="padding:8px 0;border-bottom:1px solid #f3f4f6;font-size:14px;color:#111827;">${displayValue}</td></tr>`;
     }).join('');
 
+  const formattedLink = link && link.startsWith('/') ? `${baseUrl}${link}` : link;
+
   const html = `
     <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#f9fafb;padding:24px;border-radius:12px;">
       <div style="background:${color};padding:20px 24px;border-radius:8px 8px 0 0;">
@@ -129,9 +133,9 @@ const sendNotificationEmail = async ({ type, title, message, link = '', meta = {
           </tr>
           ${metaRows}
         </table>
-        ${link ? `
+        ${formattedLink ? `
         <div style="margin-top:24px;">
-          <a href="${link}" style="display:inline-block;background:${color};color:white;padding:10px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">View in Admin Panel</a>
+          <a href="${formattedLink}" style="display:inline-block;background:${color};color:white;padding:10px 20px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;">View in Admin Panel</a>
         </div>
         ` : ''}
       </div>
