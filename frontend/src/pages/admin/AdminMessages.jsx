@@ -16,10 +16,7 @@ export default function AdminMessages() {
   useEffect(() => { fetch(); }, []);
 
   const markRead = async (id) => {
-    await messagesApi.markRead(id).catch(err => {
-      console.error('Failed to mark message as read:', err.message);
-      toast.error('Failed to mark as read');
-    });
+    await messagesApi.markRead(id).catch(() => {});
     setMessages(ms => ms.map(m => m._id === id ? { ...m, isRead: true } : m));
   };
 

@@ -12,7 +12,7 @@ export default function AdminReviews() {
 
   const fetch = () => {
     const params = filter === 'pending' ? { approved: 'false' } : filter === 'approved' ? { approved: 'true' } : {};
-    reviewsApi.getAll(params).then(res => { setReviews(res.data.data.reviews); setLoading(false); }).catch(err => { console.error('Failed to load reviews:', err.message); setLoading(false); });
+    reviewsApi.getAll(params).then(res => { setReviews(res.data.data.reviews); setLoading(false); }).catch(() => setLoading(false));
   };
 
   useEffect(() => { fetch(); }, [filter]);

@@ -116,8 +116,12 @@ const sendNotificationEmail = async ({ type, title, message, link = '', meta = {
       return `<tr><td style="padding:8px 0;border-bottom:1px solid #f3f4f6;width:160px;"><strong style="color:#6b7280;font-size:13px;">${label.toUpperCase()}</strong></td><td style="padding:8px 0;border-bottom:1px solid #f3f4f6;font-size:14px;color:#111827;">${displayValue}</td></tr>`;
     }).join('');
 
+<<<<<<< HEAD
   const targetPath = link && link.startsWith('/') ? link : '/admin/products';
   const formattedLink = `${baseUrl}/admin/login?redirect=${encodeURIComponent(targetPath)}`;
+=======
+  const formattedLink = link && link.startsWith('/') ? (baseUrl ? `${baseUrl}${link}` : `/admin/products`) : link;
+>>>>>>> 48e7132c51537928a0d3236af05e6ac7ff1f2a73
 
   const html = `
     <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#f9fafb;padding:24px;border-radius:12px;">

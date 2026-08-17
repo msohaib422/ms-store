@@ -91,10 +91,7 @@ export default function AdminNotifications() {
       await notificationsApi.markAsRead(id);
       setNotifications(prev => prev.map(n => n._id === id ? { ...n, isRead: true } : n));
       setUnreadCount(prev => Math.max(0, prev - 1));
-    } catch (err) {
-      console.error('Failed to mark notification as read:', err.message);
-      toast.error('Failed to mark as read');
-    }
+    } catch {}
   };
 
   const handleDelete = async (id) => {
